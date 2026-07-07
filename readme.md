@@ -8,6 +8,7 @@ Implementasi Arsitektur Jaringan Tersegmentasi
 3. Anis Adriyani - 0110224013
 4. Zainab Aznur - 0110224009
 5. Arya Nuryawan - 0110224012
+6. Eshi Aulia - 0110224007
 
 ## Deskripsi Proyek
 Proyek ini merupakan tugas akhir mata kuliah Virtualisasi dan Keamanan Jaringan. Tujuan utamanya adalah merancang, membangun, mengonfigurasi, dan mendokumentasikan infrastruktur jaringan virtual dengan arsitektur tersegmentasi yang mencerminkan praktik industri nyata.

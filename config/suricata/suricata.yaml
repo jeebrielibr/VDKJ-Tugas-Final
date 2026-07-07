@@ -1,0 +1,54 @@
+# Suricata EVE JSON output configuration (bagian penting)
+# Simpan di /etc/suricata/suricata.yaml
+
+# --- Network interface ---
+af-packet:
+  - interface: eth0
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+
+# --- Logging ---
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            payload: yes
+            payload-printable: yes
+            packet: yes
+        - http:
+            extended: yes
+        - dns:
+        - tls:
+            extended: yes
+        - files:
+            force-magic: no
+        - flow
+
+# --- Rule files ---
+default-rule-path: /var/lib/suricata/rules
+
+rule-files:
+  - suricata.rules
+  - custom-vdkj.rules
+
+# --- Detection engine ---
+detect-engine:
+  - profile: medium
+  - custom-values:
+      toclient-groups: 200
+      toserver-groups: 200
+
+# --- Logging settings ---
+logging:
+  default-log-level: notice
+  default-output-filter:
+  outputs:
+    - console:
+        enabled: yes
+    - file:
+        enabled: yes
+        filename: /var/log/suricata/suricata.log

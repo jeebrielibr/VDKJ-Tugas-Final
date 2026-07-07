@@ -1,0 +1,36 @@
+# ============================================================
+# Custom Suricata Rules — VDKJ Tugas Final
+# Simpan di /var/lib/suricata/rules/custom-vdkj.rules
+# ============================================================
+
+# Rule 1: SQL Injection Detection
+# Mendeteksi pola SQL injection pada URL dan parameter HTTP
+alert http any any -> $HOME_NET any ( \
+    msg:"VDKJ - Possible SQL Injection Detected"; \
+    flow:established,to_server; \
+    content:"GET"; http_method; \
+    pcre:"/(\bunion\b.*\bselect\b|\bselect\b.*\bfrom\b|\binsert\b.*\binto\b|\bdrop\b.*\btable\b|\b(or|and)\b\s+\d+\s*=\s*\d+)/i"; \
+    classtype:web-application-attack; \
+    sid:1000001; rev:1; \
+)
+
+# Rule 2: XSS (Cross-Site Scripting) Detection
+# Mendeteksi potensi serangan XSS pada request HTTP
+alert http any any -> $HOME_NET any ( \
+    msg:"VDKJ - Possible XSS Attack Detected"; \
+    flow:established,to_server; \
+    content:"POST"; http_method; \
+    pcre:"/(<script[^>]*>|javascript\s*:|on(error|load|click|mouseover)\s*=)/i"; \
+    classtype:web-application-attack; \
+    sid:1000002; rev:1; \
+)
+
+# Rule 3: Port Scan Detection
+# Mendeteksi aktivitas port scanning (multiple SYN dalam waktu singkat)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any ( \
+    msg:"VDKJ - Possible Port Scan Detected"; \
+    flags:S; \
+    threshold:type both, track by_src, count 20, seconds 60; \
+    classtype:attempted-recon; \
+    sid:1000003; rev:1; \
+)

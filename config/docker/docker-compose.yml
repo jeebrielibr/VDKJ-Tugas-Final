@@ -1,0 +1,36 @@
+services:
+  app1-flask:
+    build: ../apps/app1
+    container_name: app1-flask
+    restart: unless-stopped
+    environment:
+      - DB_HOST=${DB_HOST:-192.168.56.10}
+      - DB_PORT=3306
+      - DB_USER=app1_user
+      - DB_PASS=app1_pass
+      - DB_NAME=app1_bukutamu
+      - SECRET_KEY=change-me-in-production
+      - FLASK_DEBUG=0
+    ports:
+      - "5000:5000"
+    networks:
+      - dmz-net
+
+  app2-php:
+    build: ../apps/app2
+    container_name: app2-php
+    restart: unless-stopped
+    environment:
+      - DB_HOST=${DB_HOST:-192.168.56.10}
+      - DB_PORT=3306
+      - DB_USER=app2_user
+      - DB_PASS=app2_pass
+      - DB_NAME=app2_produk
+    ports:
+      - "8080:80"
+    networks:
+      - dmz-net
+
+networks:
+  dmz-net:
+    driver: bridge
