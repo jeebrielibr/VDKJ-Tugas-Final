@@ -4,11 +4,11 @@
 
 | No | Nama | NIM | Peran |
 |----|------|-----|-------|
-| 1 | Muhammad Jibril Ibrahim | 0110224002 | **Network Engineer** — MikroTik CHR, firewall, routing, NAT |
-| 2 | Muhammad Hisyam Alfaris | 0110224006 | **System Administrator** — VM Ubuntu, Nginx, Suricata |
-| 3 | Arya Nuryawan | 0110224013 | **DevOps / Developer** — Docker, Docker Compose, aplikasi web |
-| 4 | Zainab Aznur | 0110224009 | **Database Administrator** — MySQL/MariaDB, skema DB, keamanan DB |
-| 5 | Anis Adriyani | 0110224012 | **Documentation & QA** — Laporan, pengujian, slide presentasi |
+| 1 | - | - | **Network Engineer** — MikroTik CHR, firewall, routing, NAT |
+| 2 | - | - | **System Administrator** — VM Ubuntu, Nginx, Suricata |
+| 3 | - | - | **DevOps / Developer** — Docker, Docker Compose, aplikasi web |
+| 4 | - | - | **Database Administrator** — MySQL/MariaDB, skema DB, keamanan DB |
+| 5 | - | - | **Documentation & QA** — Laporan, pengujian, slide presentasi |
 
 > Setiap anggota wajib bisa menjelaskan seluruh bagian konfigurasi saat presentasi/demo.
 
@@ -16,7 +16,7 @@
 
 ## Daftar Task per Peran
 
-### 1. Network Engineer (Jibril)
+### 1. Network Engineer
 
 | # | Task | Milestone | Status |
 |---|------|-----------|--------|
@@ -36,7 +36,7 @@
 | 1.14 | Export konfigurasi MikroTik (.rsc) | Minggu 9 | [ ] |
 | 1.15 | Pengujian konektivitas & firewall (ping, akses port, SSH) | Minggu 9 | [ ] |
 
-### 2. System Administrator (Hisyam)
+### 2. System Administrator
 
 | # | Task | Milestone | Status |
 |---|------|-----------|--------|
@@ -54,7 +54,7 @@
 | 2.12 | Verifikasi Suricata aktif & alert berfungsi | Minggu 9 | [ ] |
 | 2.13 | Export file konfigurasi (nginx.conf, suricata.yaml, custom .rules) | Minggu 9 | [ ] |
 
-### 3. DevOps / Developer (Anis)
+### 3. DevOps / Developer
 
 | # | Task | Milestone | Status |
 |---|------|-----------|--------|
@@ -69,7 +69,7 @@
 | 3.9 | Integrasi & testing end-to-end (app → Nginx → DB) | Minggu 9 | [ ] |
 | 3.10 | Buat README.md cara menjalankan/replikasi setup | Minggu 10 | [ ] |
 
-### 4. Database Administrator (Zainab)
+### 4. Database Administrator
 
 | # | Task | Milestone | Status |
 |---|------|-----------|--------|
@@ -84,7 +84,7 @@
 | 4.9 | Testing koneksi dari VM DMZ ke DB Server | Minggu 9 | [ ] |
 | 4.10 | Verifikasi akses dari external langsung ditolak | Minggu 9 | [ ] |
 
-### 5. Documentation & QA (Arya)
+### 5. Documentation & QA
 
 | # | Task | Milestone | Status |
 |---|------|-----------|--------|

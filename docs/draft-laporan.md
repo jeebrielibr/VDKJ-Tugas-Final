@@ -13,6 +13,7 @@
 | 3 | Anis Adriyani | 0110224013 |
 | 4 | Zainab Aznur | 0110224009 |
 | 5 | Arya Nuryawan | 0110224012 |
+| 6 | Eshi Aulia | 0110224007 |
 
 ---
 
