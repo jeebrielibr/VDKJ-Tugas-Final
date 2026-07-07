@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Pesan - Buku Tamu</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; background: #f5f5f5; }
+        h1 { color: #333; }
+        form { background: #fff; padding: 1.5rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        label { display: block; margin-top: 1rem; font-weight: bold; color: #555; }
+        input, textarea { width: 100%; padding: .5rem; margin-top: .3rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { height: 100px; resize: vertical; }
+        .btn { margin-top: 1.5rem; padding: .6rem 1.5rem; background: #3498db; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background: #2980b9; }
+        a { display: inline-block; margin-top: 1rem; color: #3498db; }
+    </style>
+</head>
+<body>
+    <h1>{{ action }} Pesan</h1>
+    <form method="post">
+        <label for="nama">Nama *</label>
+        <input type="text" id="nama" name="nama" value="{{ tamu.nama if tamu else '' }}" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="{{ tamu.email if tamu else '' }}">
+
+        <label for="pesan">Pesan *</label>
+        <textarea id="pesan" name="pesan" required>{{ tamu.pesan if tamu else '' }}</textarea>
+
+        <button type="submit" class="btn">{{ action }}</button>
+    </form>
+    <a href="/">&larr; Kembali ke Buku Tamu</a>
+</body>
+</html>
