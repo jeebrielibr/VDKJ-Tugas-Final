@@ -37,13 +37,13 @@
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  NETWORK TOPOLOGY                    │
+│                  NETWORK TOPOLOGY                   │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │  [External Network]                                 │
 │       │                                             │
 │  [MikroTik CHR]                                     │
-│   ether1-wan : DHCP (dari hypervisor)               │
+│   ether1-external : DHCP (dari hypervisor)          │
 │   ether2-dmz : 7.7.7.1/30                           │
 │   ether3-lan : 192.168.56.1/24                      │
 │       │           │                                 │
@@ -57,7 +57,7 @@
 │  7.7.7.2     192.168.56.10                          │
 │  Nginx       MySQL                                  │
 │  Docker      MariaDB                                │
-│  Suricata                                            │
+│  Suricata                                           │
 │  ┌────────┐                                         │
 │  │App1    │  Flask (port 5000)                      │
 │  │App2    │  PHP   (port 8080→80)                   │
@@ -107,7 +107,7 @@ apps/
 
    | Adapter | Type | Connected To | Keterangan |
    |---------|------|-------------|------------|
-   | NIC 1   | Bridged / Host-only | Network external | → ether1-wan |
+   | NIC 1   | Bridged / Host-only | Network external | → ether1-external |
    | NIC 2   | Internal / Host-only | `dmz-network` | → ether2-dmz |
    | NIC 3   | Internal / Host-only | `lan-network` | → ether3-lan |
 
@@ -145,7 +145,7 @@ apps/
 
 ```routeros
 /interface ethernet
-set [ find default-name=ether1 ] name=ether1-wan
+set [ find default-name=ether1 ] name=ether1-external
 set [ find default-name=ether2 ] name=ether2-dmz
 set [ find default-name=ether3 ] name=ether3-lan
 ```
@@ -154,12 +154,12 @@ set [ find default-name=ether3 ] name=ether3-lan
 
 ```routeros
 /interface list
-add name=WAN
+add name=external
 add name=DMZ
 add name=LAN
 
 /interface list member
-add interface=ether1-wan list=WAN
+add interface=ether1-external list=external
 add interface=ether2-dmz list=DMZ
 add interface=ether3-lan list=LAN
 ```
@@ -175,20 +175,20 @@ add address=7.7.7.1/30 interface=ether2-dmz network=7.7.7.0
 add address=192.168.56.1/24 interface=ether3-lan network=192.168.56.0
 ```
 
-### 3.4 WAN (DHCP Client)
+### 3.4 external (DHCP Client)
 
 Jika external network punya DHCP server:
 
 ```routeros
 /ip dhcp-client
-add interface=ether1-wan disabled=no
+add interface=ether1-external disabled=no
 ```
 
 Jika static IP (sesuaikan):
 
 ```routeros
 /ip address
-add address=192.168.1.100/24 interface=ether1-wan network=192.168.1.0
+add address=192.168.1.100/24 interface=ether1-external network=192.168.1.0
 /ip route
 add distance=1 gateway=192.168.1.1
 ```
@@ -294,13 +294,13 @@ add action=drop chain=input \
 # Izinkan HTTP/HTTPS dari external ke Nginx di DMZ
 add action=accept chain=forward \
     dst-address=7.7.7.2 dst-port=80,443 protocol=tcp \
-    in-interface=ether1-wan \
+    in-interface=ether1-external \
     comment="14-allow-http-https-to-dmz"
 
 # Drop semua traffic lain dari external ke DMZ
 add action=drop chain=forward \
     dst-address=7.7.7.0/30 \
-    in-interface=ether1-wan \
+    in-interface=ether1-external \
     comment="15-drop-other-external-to-dmz"
 ```
 
@@ -325,7 +325,7 @@ add action=drop chain=forward \
 ```routeros
 add action=drop chain=forward \
     dst-address=192.168.56.0/24 \
-    in-interface=ether1-wan \
+    in-interface=ether1-external \
     comment="18-drop-external-to-lan"
 ```
 
@@ -334,12 +334,12 @@ add action=drop chain=forward \
 ```routeros
 # LAN → Internet
 add action=accept chain=forward \
-    in-interface=ether3-lan out-interface=ether1-wan \
+    in-interface=ether3-lan out-interface=ether1-external \
     comment="19-allow-lan-to-internet"
 
 # DMZ → Internet (untuk apt update, pip install, dll)
 add action=accept chain=forward \
-    in-interface=ether2-dmz out-interface=ether1-wan \
+    in-interface=ether2-dmz out-interface=ether1-external \
     comment="20-allow-dmz-to-internet"
 
 # Drop semua FORWARD lainnya
@@ -378,7 +378,7 @@ Pastikan urutan rule benar:
 ```routeros
 /ip firewall nat
 add action=masquerade chain=srcnat \
-    out-interface=ether1-wan \
+    out-interface=ether1-external \
     comment="nat-masquerade"
 ```
 
@@ -387,13 +387,13 @@ add action=masquerade chain=srcnat \
 ```routeros
 # Port 80 → VM DMZ (Nginx)
 add action=dst-nat chain=dstnat \
-    dst-port=80 in-interface=ether1-wan protocol=tcp \
+    dst-port=80 in-interface=ether1-external protocol=tcp \
     to-addresses=7.7.7.2 to-ports=80 \
     comment="dnat-http-to-nginx"
 
 # Port 443 → VM DMZ (Nginx)
 add action=dst-nat chain=dstnat \
-    dst-port=443 in-interface=ether1-wan protocol=tcp \
+    dst-port=443 in-interface=ether1-external protocol=tcp \
     to-addresses=7.7.7.2 to-ports=443 \
     comment="dnat-https-to-nginx"
 ```
@@ -951,26 +951,26 @@ sudo cat /var/log/suricata/fast.log
 Dari mesin host/laptop (berperan sebagai "External"):
 
 ```bash
-# Pastikan bisa ping MikroTik WAN IP
-ping <IP-WAN-MikroTik>
+# Pastikan bisa ping MikroTik external IP
+ping <IP-external-MikroTik>
 ```
 
 Tambahkan di `/etc/hosts` laptop:
 
 ```
-<IP-WAN-MikroTik>  app1.vdkj.local
-<IP-WAN-MikroTik>  app2.vdkj.local
+<IP-external-MikroTik>  app1.vdkj.local
+<IP-external-MikroTik>  app2.vdkj.local
 ```
 
 ### 11.2 Konektivitas Dasar
 
 | # | Test | Command (dari External) | Hasil Harap | 📸 |
 |---|------|------------------------|-------------|-----|
-| 1 | Ping → Router | `ping <IP-WAN>` | ✅ Berhasil | Ya |
+| 1 | Ping → Router | `ping <IP-external>` | ✅ Berhasil | Ya |
 | 2 | Ping DMZ → LAN | `ssh vdkj@7.7.7.2` lalu `ping 192.168.56.10` | ✅ Berhasil | Ya |
 | 3 | Ping External → LAN | `ping 192.168.56.10` | ❌ Gagal | Ya |
-| 4 | HTTP ke Nginx | `curl http://<IP-WAN>:80` | ✅ Berhasil | Ya |
-| 5 | Direct port container | `curl http://<IP-WAN>:5000` | ❌ Gagal | Ya |
+| 4 | HTTP ke Nginx | `curl http://<IP-external>:80` | ✅ Berhasil | Ya |
+| 5 | Direct port container | `curl http://<IP-external>:5000` | ❌ Gagal | Ya |
 | 6 | MySQL DMZ → DB | `mysql -h 192.168.56.10 -u app1_user -p` | ✅ Berhasil | Ya |
 | 7 | MySQL External → DB | `mysql -h 192.168.56.10 -u app1_user -p` | ❌ Gagal | Ya |
 
@@ -978,11 +978,11 @@ Tambahkan di `/etc/hosts` laptop:
 
 | # | Test | Command | 📸 |
 |---|------|---------|-----|
-| 1 | App1 via Nginx | Buka browser: `http://<IP-WAN>` (Host: app1.vdkj.local) | Ya |
-| 2 | App2 via Nginx | Buka browser: `http://<IP-WAN>` (Host: app2.vdkj.local) | Ya |
+| 1 | App1 via Nginx | Buka browser: `http://<IP-external>` (Host: app1.vdkj.local) | Ya |
+| 2 | App2 via Nginx | Buka browser: `http://<IP-external>` (Host: app2.vdkj.local) | Ya |
 | 3 | CRUD App1 | Tambah/Edit/Hapus pesan di Buku Tamu | Ya |
 | 4 | CRUD App2 | Tambah/Edit/Hapus produk | Ya |
-| 5 | Security headers | `curl -I http://<IP-WAN>` — cek X-Frame-Options, dll | Ya |
+| 5 | Security headers | `curl -I http://<IP-external>` — cek X-Frame-Options, dll | Ya |
 | 6 | Nginx access log | `sudo tail /var/log/nginx/app1_access.log` | Ya |
 
 ### 11.4 Firewall MikroTik
@@ -990,8 +990,8 @@ Tambahkan di `/etc/hosts` laptop:
 | # | Test | Command | 📸 |
 |---|------|---------|-----|
 | 1 | Drop External→LAN | `ping 192.168.56.10` dari external → timeout | Ya |
-| 2 | SSH hanya LAN | `ssh admin@<IP-WAN>` dari external → ditolak | Ya |
-| 3 | Port scan detect | `nmap -sS <IP-WAN>` dari external | Ya |
+| 2 | SSH hanya LAN | `ssh admin@<IP-external>` dari external → ditolak | Ya |
+| 3 | Port scan detect | `nmap -sS <IP-external>` dari external | Ya |
 | 4 | Connection tracking | `/ip firewall connection print` di MikroTik | Ya |
 | 5 | Address list block | Tambah IP ke address list, coba akses → ditolak | Ya |
 

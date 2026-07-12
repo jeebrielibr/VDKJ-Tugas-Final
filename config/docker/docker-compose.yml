@@ -1,6 +1,6 @@
 services:
   app1-flask:
-    build: ../apps/app1
+    build: ../../apps/app1
     container_name: app1-flask
     restart: unless-stopped
     environment:
@@ -17,7 +17,7 @@ services:
       - dmz-net
 
   app2-php:
-    build: ../apps/app2
+    build: ../../apps/app2
     container_name: app2-php
     restart: unless-stopped
     environment:
