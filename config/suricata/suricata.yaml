@@ -1,5 +1,17 @@
+%YAML 1.1
+---
+
 # Suricata EVE JSON output configuration (bagian penting)
 # Simpan di /etc/suricata/suricata.yaml
+
+# --- Network variables ---
+vars:
+  address-groups:
+    HOME_NET: "[7.7.7.0/30,192.168.56.0/24]"
+    EXTERNAL_NET: "!$HOME_NET"
+  port-groups:
+    HTTP_PORTS: "80"
+    SHELLCODE_PORTS: "!80"
 
 # --- Network interface ---
 af-packet:
@@ -32,7 +44,6 @@ outputs:
 default-rule-path: /var/lib/suricata/rules
 
 rule-files:
-  - suricata.rules
   - custom-vdkj.rules
 
 # --- Detection engine ---
