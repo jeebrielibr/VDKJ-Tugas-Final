@@ -104,14 +104,14 @@ Docker:
 
 ## Status Implementasi
 
-- [ ] Perencanaan & desain arsitektur
-- [ ] Konfigurasi MikroTik CHR (interface, IP, routing, firewall, NAT)
-- [ ] Setup VM Ubuntu di DMZ
-- [ ] Deploy Docker container (2 web app)
-- [ ] Konfigurasi Nginx reverse proxy
-- [ ] Setup MySQL di LAN
-- [ ] Integrasi app <-> database
-- [ ] Install & konfigurasi Suricata IDS/IPS
-- [ ] Pengujian konektivitas & keamanan
-- [ ] Penyusunan laporan
-- [ ] Presentasi & demo
+- [x] Perencanaan & desain arsitektur
+- [x] Konfigurasi MikroTik CHR (interface, IP, routing, firewall, NAT)
+- [x] Setup VM Ubuntu di DMZ
+- [x] Deploy Docker container (2 web app)
+- [x] Konfigurasi Nginx reverse proxy
+- [x] Setup MySQL di LAN
+- [x] Integrasi app ↔ database
+- [x] Install & konfigurasi Suricata IDS/IPS
+- [x] Pengujian konektivitas & keamanan
+- [~] Penyusunan laporan — draft selesai, dalam tahap review
+- [ ] Presentasi & demo — belum dikerjakan
