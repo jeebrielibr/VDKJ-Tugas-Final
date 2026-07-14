@@ -1,36 +1,40 @@
-services:
-  app1-flask:
-    build: ../../apps/app1
-    container_name: app1-flask
-    restart: unless-stopped
-    environment:
-      - DB_HOST=${DB_HOST:-192.168.56.10}
-      - DB_PORT=3306
-      - DB_USER=app1_user
-      - DB_PASS=app1_pass
-      - DB_NAME=app1_bukutamu
-      - SECRET_KEY=change-me-in-production
-      - FLASK_DEBUG=0
-    ports:
-      - "5000:5000"
-    networks:
-      - dmz-net
+version: '3.8'
 
-  app2-php:
-    build: ../../apps/app2
-    container_name: app2-php
+services:
+  app1:
+    build:
+      context: ./app1
+      dockerfile: Dockerfile
+    container_name: web-app1
     restart: unless-stopped
     environment:
-      - DB_HOST=${DB_HOST:-192.168.56.10}
-      - DB_PORT=3306
-      - DB_USER=app2_user
-      - DB_PASS=app2_pass
-      - DB_NAME=app2_produk
+      - DB_HOST=192.168.56.10
+      - DB_USER=app1_user
+      - DB_PASSWORD=password_app1
+      - DB_NAME=app1_db
     ports:
-      - "8080:80"
+      - "3000:5000"
     networks:
-      - dmz-net
+      - dmz_network
+    user: "1000:1000"
+
+  app2:
+    build:
+      context: ./app2
+      dockerfile: Dockerfile
+    container_name: web-app2
+    restart: unless-stopped
+    environment:
+      - DB_HOST=192.168.56.10
+      - DB_USER=app2_user
+      - DB_PASSWORD=password_app2
+      - DB_NAME=app2_db
+    ports:
+      - "8080:5000"
+    networks:
+      - dmz_network
+    user: "1000:1000"
 
 networks:
-  dmz-net:
+  dmz_network:
     driver: bridge
